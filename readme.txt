@@ -1,4 +1,6 @@
-You are viewing the alpha version of a quick MyBB 1.8 plugin for reputation bars. It has been tested on a live forum and is safe for installation. However, we are still working on this plugin and some bugs may exist. Please report them and we will fix them promptly! :)
+Reputation Bars: 
+
+This is a simple plugin that creates a progress bar for user reputations on their posts (below their avatars). This plugin is safe for live installations and has been tested. As this is a first-version plugin, we encourage you to report any bugs or suggestions you may encounter! :)
 
 -------------------------------
 Installation: 
@@ -33,5 +35,9 @@ Info:
 -------------------------------
 
 License: GPL version 3. 
+
 Translations: This plugin is GPL licensed. You may translate as you wish! Many thanks to those who translate my plugins, your work is very much appreciated. :)
+
+Developers: If you're interested in forking this plugin (or otherwise modifying it or extending it) please feel free. If you distribute a modified version, please leave a link and credit to the original plugin. That's my only request! 
+
 Author: Darth-Apple (MyBB Community Forums) @ http://makestation.net
