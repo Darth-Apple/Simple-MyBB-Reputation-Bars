@@ -26,14 +26,14 @@ $plugins->add_hook("postbit_announcement", "repbars_18_parse");
 function repbars_18_info()
 {
 	return array(
-		'name'			=> 'Simple Reputation Bars',
-		'description'	=> 'Displays simple reputation bars on posts.',
-		'website'		=> 'http://www.makestation.net',
-		'author'		=> 'Darth Apple',
-		'authorsite'	=> 'http://www.makestation.net',
-		'codename' 		=> 'repbars_18',
-		'version'		=> '1.0',
-		"compatibility"	=> "18*"
+		'name'	        =>  'Simple Reputation Bars',
+		'description'	=>  'Displays simple reputation bars on posts.',
+		'website'		=>  'http://www.makestation.net',
+		'author'		=>  'Darth Apple',
+		'authorsite'	=>  'http://www.makestation.net',
+		'codename' 		=>  'repbars_18',
+		'version'		=>  '1.0',
+		"compatibility"	=>  "18*"
 	);
 }
 
@@ -99,11 +99,11 @@ function repbars_18_activate () {
         'gid' => $group['gid']
     );		
 
-		// insert the settings
-		foreach($settings as $array => $setting) {
-			$db->insert_query("settings", $setting); // lots of queries
-		}
-		rebuild_settings();
+    // insert the settings
+    foreach($settings as $array => $setting) {
+        $db->insert_query("settings", $setting); // lots of queries
+    }
+    rebuild_settings();
 }
 
 function repbars_18_deactivate () {
@@ -135,7 +135,7 @@ function repbars_18_parse (&$post) {
     else {
         $rep = $post['reputation'] - $mybb->settings['repbar_18_min'];
 
-        // Floor division, to avoid situations where the CSS has to figure out widths such as 3.3333333333333%, etc. 
+        // Future release: Add floor division, to avoid situations where the CSS has to figure out widths such as 3.3333333333333%, etc. 
         $rep = $rep / ($mybb->settings['repbar_18_max'] - $mybb->settings['repbar_18_min']); 
         $rep = $rep * 100;
     }
@@ -148,6 +148,6 @@ Reputation:
             ' . (int) $post['reputation'] .'
         </div>
     </div>    
-</div>'; // padding fix
+</div>'; 
 	return $post;
 }
