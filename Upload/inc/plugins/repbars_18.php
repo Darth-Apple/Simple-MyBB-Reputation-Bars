@@ -191,7 +191,7 @@ function repbars_18_parse (&$post) {
     $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
 
     if ($post['reputation'] == 0) {
-        $background = "#969696"; // Display a gray bar if the user has no reputation. 
+        $background = "#545151"; // Display a gray bar if the user has no reputation. 
     } 
     else {
         $background = htmlspecialchars($mybb->settings['repbar_18_background']);
@@ -226,7 +226,7 @@ function repbars_18_profile() {
     $br_above_label = "<br />";
 
     if ($memprofile['reputation'] == 0) {
-        $background = "#969696"; // Display a gray bar if the user has no reputation. 
+        $background = "#545151"; // Display a gray bar if the user has no reputation. 
     } 
     else {
         $background = htmlspecialchars($mybb->settings['repbar_18_background']);
