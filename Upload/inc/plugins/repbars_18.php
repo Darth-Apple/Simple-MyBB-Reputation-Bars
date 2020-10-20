@@ -146,8 +146,7 @@ function repbars_18_activate () {
     $templates = array();
     $templates['repbars_18_bar'] = '
     {$br_above_label}
-    {$lang->repbars_18_reputation}
-    <div style="margin-top: 3px; padding: 0px; padding-right:3px; margin-right: 5px; {$max_width}">
+    <div style="margin-top: 3px; padding: 0px; padding-right:3px; margin-right: 5px; {$max_width}" title="{$lang->repbars_18_reputation}">
         <div class="rep-meter" style="border-radius: 4px; padding: 2px; padding-right: 5px; border: 1px solid #cccccc; width: 100%; ">
             <div class="rep-meter-inner" style="background-color: {$background}; color: {$color}; width: {$rep}%; text-align: left; padding-left:2px; ">
                 {$post[\'reputation\']}
