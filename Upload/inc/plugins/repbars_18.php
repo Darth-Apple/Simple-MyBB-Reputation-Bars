@@ -166,9 +166,9 @@ function repbars_18_deactivate () {
     require MYBB_ROOT.'/inc/adminfunctions_templates.php';
     
     // Undo template modifications
-	find_replace_templatesets("postbit", '#'.preg_quote(' {$post[\'repbars_18\']}').'#', '',0);
+	find_replace_templatesets("postbit", '#'.preg_quote('{$post[\'repbars_18\']}').'#', '',0);
     find_replace_templatesets("postbit_classic", '#'.preg_quote('{$post[\'repbars_18\']}').'#', '',0);
-	find_replace_templatesets("member_profile", '#'.preg_quote(' {$memprofile[\'repbars_18\']}').'#', '',0);
+	find_replace_templatesets("member_profile", '#'.preg_quote('{$memprofile[\'repbars_18\']}').'#', '',0);
 
     // Remove settings
     $query = $db->simple_select('settinggroups', 'gid', 'name = "repbars_18"'); // remove settings
@@ -186,11 +186,17 @@ function repbars_18_deactivate () {
 
 function repbars_18_parse (&$post) {
     global $mybb, $templates, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
-    
-    $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
-    $background = htmlspecialchars($mybb->settings['repbar_18_background']);
+
     $max_width = "";
-    $br_above_label = "";
+    $br_above_label = "<br />";    
+    $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
+
+    if ($post['reputation'] == 0) {
+        $background = "#969696"; // Display a gray bar if the user has no reputation. 
+    } 
+    else {
+        $background = htmlspecialchars($mybb->settings['repbar_18_background']);
+    }
 
     // Determine if we have a full bar
     if ($post['reputation'] >= $mybb->settings['repbar_18_max']) {
@@ -217,15 +223,21 @@ function repbars_18_profile() {
     global $mybb, $templates, $memprofile, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
     
     $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
-    $background = htmlspecialchars($mybb->settings['repbar_18_background']);
     $max_width = "max-width: 200px;";
     $br_above_label = "<br />";
+
+    if ($memprofile['reputation'] == 0) {
+        $background = "#969696"; // Display a gray bar if the user has no reputation. 
+    } 
+    else {
+        $background = htmlspecialchars($mybb->settings['repbar_18_background']);
+    }
 
     // Determine if we have a full bar
     if ($memprofile['reputation'] >= $mybb->settings['repbar_18_max']) {
         $rep = 100; 
     } 
-    
+
     else {
         $rep = $memprofile['reputation'] - $mybb->settings['repbar_18_min'];
         $rep = $rep / ($mybb->settings['repbar_18_max'] - $mybb->settings['repbar_18_min']); 
