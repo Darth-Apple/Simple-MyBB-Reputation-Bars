@@ -19,12 +19,19 @@ if(!defined("IN_MYBB")) {
     die("Hacking Attempt.");
 }
 
-$plugins->add_hook("postbit", "repbars_18_parse");
-$plugins->add_hook("postbit_pm", "repbars_18_parse");
-$plugins->add_hook("postbit_announcement", "repbars_18_parse");
+if (isset($mybb->settings['repbar_18_postbit']) && $mybb->settings['repbar_18_postbit'] == 1) {
+    $plugins->add_hook("postbit", "repbars_18_parse");
+    $plugins->add_hook("postbit_pm", "repbars_18_parse");
+    $plugins->add_hook("postbit_announcement", "repbars_18_parse");
+    $plugins->add_hook("showthread_start", "repbars_18_loadlang");
+    $plugins->add_hook("private_start", "repbars_18_loadlang");
+}
 
-$plugins->add_hook("showthread_start", "repbars_18_loadlang");
-$plugins->add_hook("private_start", "repbars_18_loadlang");
+if (isset($mybb->settings['repbar_18_profile']) && $mybb->settings['repbar_18_profile'] == 1) {
+    $plugins->add_hook("member_profile_start", "repbars_18_loadlang");
+    $plugins->add_hook("member_profile_end", "repbars_18_profile");
+}
+
 
 
 function repbars_18_info() {
@@ -50,6 +57,7 @@ function repbars_18_activate () {
     
     find_replace_templatesets("postbit", '#'.preg_quote('{$post[\'groupimage\']}').'#', '{$post[\'groupimage\']} {$post[\'repbars_18\']}');	
 	find_replace_templatesets("postbit_classic", '#'.preg_quote('{$post[\'groupimage\']}').'#', '{$post[\'groupimage\']} {$post[\'repbars_18\']}');	
+	find_replace_templatesets("member_profile", '#'.preg_quote('{$groupimage}').'#', '{$groupimage} {$memprofile[\'repbars_18\']}');
 
     // Insert settings
     $setting_group = array (
@@ -62,6 +70,28 @@ function repbars_18_activate () {
 
     $group['gid'] = $db->insert_query("settinggroups", $setting_group); // inserts new group for settings into the database. 	
     $settings = array();
+
+    $settings[] = array(
+        'name' => 'repbar_18_postbit',
+        'title' => $db->escape_string($lang->repbars_18_postbit),
+        'description' => $db->escape_string($lang->repbars_18_postbit_desc),
+        'optionscode' => 'yesno',
+        'value' => '1',
+        'disporder' => 1,
+        'isdefault' => 0,
+        'gid' => $group['gid']
+    );
+
+    $settings[] = array(
+        'name' => 'repbar_18_profile',
+        'title' => $db->escape_string($lang->repbars_18_profile),
+        'description' => $db->escape_string($lang->repbars_18_profile_desc),
+        'optionscode' => 'yesno',
+        'value' => '1',
+        'disporder' => 1,
+        'isdefault' => 0,
+        'gid' => $group['gid']
+    );
 
     $settings[] = array(
         'name' => 'repbar_18_min',
@@ -115,8 +145,9 @@ function repbars_18_activate () {
     // Enter templates. 
     $templates = array();
     $templates['repbars_18_bar'] = '
+    {$br_above_label}
     {$lang->repbars_18_reputation}
-    <div style="margin-top: 3px; padding: 0px; padding-right:3px; margin-right: 5px;">
+    <div style="margin-top: 3px; padding: 0px; padding-right:3px; margin-right: 5px; {$max_width}">
         <div class="rep-meter" style="border-radius: 4px; padding: 2px; padding-right: 5px; border: 1px solid #cccccc; width: 100%; ">
             <div class="rep-meter-inner" style="background-color: {$background}; color: {$color}; width: {$rep}%; text-align: left; padding-left:2px; ">
                 {$post[\'reputation\']}
@@ -136,8 +167,9 @@ function repbars_18_deactivate () {
     
     // Undo template modifications
 	find_replace_templatesets("postbit", '#'.preg_quote(' {$post[\'repbars_18\']}').'#', '',0);
-    find_replace_templatesets("postbit_classic", '#'.preg_quote('{$post[\'repbars_18\']}').'#', '',0); 
-    
+    find_replace_templatesets("postbit_classic", '#'.preg_quote('{$post[\'repbars_18\']}').'#', '',0);
+	find_replace_templatesets("member_profile", '#'.preg_quote(' {$memprofile[\'repbars_18\']}').'#', '',0);
+
     // Remove settings
     $query = $db->simple_select('settinggroups', 'gid', 'name = "repbars_18"'); // remove settings
     $groupid = $db->fetch_field($query, 'gid');
@@ -153,32 +185,62 @@ function repbars_18_deactivate () {
 }
 
 function repbars_18_parse (&$post) {
-    global $mybb, $templates, $cache, $repbars_18, $templates, $lang, $color, $background, $rep;
+    global $mybb, $templates, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
     
     $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
-    $background = htmlspecialchars($mybb->settings['repbar_18_background']);;
+    $background = htmlspecialchars($mybb->settings['repbar_18_background']);
+    $max_width = "";
+    $br_above_label = "";
 
-    // Determine if we have an empty bar. We still set the width to 5% for asthetic purposes. 
-    if ($post['reputation'] <= $mybb->settings['repbar_18_min']) {
-        $rep = 5; 
-    }
-    else if ($post['reputation'] >= $mybb->settings['repbar_18_max']) {
+    // Determine if we have a full bar
+    if ($post['reputation'] >= $mybb->settings['repbar_18_max']) {
         $rep = 100; 
-    } 
+    }
+
     else {
-        // Calculate some percentages.
         $rep = $post['reputation'] - $mybb->settings['repbar_18_min'];
         $rep = $rep / ($mybb->settings['repbar_18_max'] - $mybb->settings['repbar_18_min']); 
         $rep = (int) ($rep * 100); // Avoid situations where the CSS has to render widths such as 3.333333333%, etc. 
         
-        // Minimum bar width is 5% for asthetic/visual purposes. Otherwise, the reputation count won't fit inside the bar. 
         if ($rep < 5) {
-            $rep = 5; 
+            $rep = 5;  // Minimum bar width is 5% for asthetic/visual purposes. Otherwise, the reputation count won't fit inside the bar. 
+        }
+        if ($post['reputation'] >= 10 && $rep < 9) {
+            $rep = 9; // Bug fix for situations when two digit reputations don't fit inside the bar background. 
         }
     }
     $post['reputation'] = (int) $post['reputation'];
-
     eval("\$post['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
+}
+
+function repbars_18_profile() {
+    global $mybb, $templates, $memprofile, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
+    
+    $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
+    $background = htmlspecialchars($mybb->settings['repbar_18_background']);
+    $max_width = "max-width: 200px;";
+    $br_above_label = "<br />";
+
+    // Determine if we have a full bar
+    if ($memprofile['reputation'] >= $mybb->settings['repbar_18_max']) {
+        $rep = 100; 
+    } 
+    
+    else {
+        $rep = $memprofile['reputation'] - $mybb->settings['repbar_18_min'];
+        $rep = $rep / ($mybb->settings['repbar_18_max'] - $mybb->settings['repbar_18_min']); 
+        $rep = (int) ($rep * 100); // Avoid situations where the CSS has to render widths such as 3.333333333%, etc. 
+        
+        if ($rep < 5) {
+            $rep = 5;  // Minimum bar width is 5% for asthetic/visual purposes. Otherwise, the reputation count won't fit inside the bar. 
+        }
+        if ($memprofile['reputation'] >= 10 && $rep < 9) {
+            $rep = 9; // Bug fix for situations when two digit reputations don't fit inside the bar background. 
+        }
+    }
+    $post['reputation'] = (int) $memprofile['reputation'];
+    $memprofile['reputation'] = (int) $memprofile['reputation'];
+    eval("\$memprofile['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
 }
 
 function repbars_18_loadlang () {

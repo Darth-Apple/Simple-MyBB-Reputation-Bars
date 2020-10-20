@@ -2,6 +2,12 @@
 $l['repbars_18_title'] = "Simple Reputation Bars";
 $l['repbars_18_desc'] = "Displays simple reputation bars on the user's postbit.";
 
+$l['repbars_18_postbit'] = "Enable on Postbit?";
+$l['repbars_18_postbit_desc'] = "This setting determines whether this plugin displays the reputation bar on posts.";
+
+$l['repbars_18_profile'] = "Enable on Profile?";
+$l['repbars_18_profile_desc'] = "This setting determines whether the reputation bar will be displayed on the user's profile.";
+
 $l['repbars_18_min'] = "Minimum reputation level: "; 
 $l['repbars_18_min_desc'] = "What reputation level should be required before the user's bar starts to increase?";
 

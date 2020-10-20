@@ -14,6 +14,8 @@ Settings:
 
 Four settings are provided: 
 
+ - Enable/Disable on Postbit
+ - Enable/Disable on Profile
  - Background (bar color)
  - Text color
  - Minimum rep
@@ -27,7 +29,7 @@ Templates:
 
 One template is added under global templates titled "repbars_18_bar" - You may modify this to change the styling of your reputation bar accordingly. 
 
-Two templates are modified on activation to display the bar. Although this modification is usually made successfully, some highly modified themes may behave in unexpected ways. If the bar does not display after activation, manually modify your postbox and postbit_classic templates, and add the following variable: {$post['repbars_18']}
+Two templates are modified on activation to display the bar. Although this modification is usually made successfully upon activation, it may fail on certain highly modified themes If the bar does not display after activation, manually modify your postbox and postbit_classic templates, and add the following variable: {$post['repbars_18']}. For user profiles, modify member_profile and add: {$memprofile['repbars_18']}
 
 
 -------------------------------
