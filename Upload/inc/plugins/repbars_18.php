@@ -54,8 +54,8 @@ function repbars_18_activate () {
     // Insert settings
     $setting_group = array (
         'name' => 'repbars_18', 
-        'title' => $db->escape_string("Simple Reputation Bars"),
-        'description' => $db->escape_string("Configure Simple Reputation Bars on Postbit"),
+        'title' => $db->escape_string($lang->repbars_18_title),
+        'description' => $db->escape_string($lang->repbars_18_desc),
         'disporder' => $rows+3,
         'isdefault' => 0
     ); 
