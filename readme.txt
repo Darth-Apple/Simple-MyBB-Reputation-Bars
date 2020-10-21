@@ -6,7 +6,10 @@ This is a simple plugin that creates a progress bar for user reputations on thei
 Installation: 
 -------------------------------
 
-Upload the contents of the Upload folder to your forum root. 
+ - Upload the contents of the Upload folder to your forum root. 
+ - Enable from ACP -> Configuration -> Plugins
+
+ - A special thanks to @tc4me at https://autism4all.at for providing the German translation. We have included it with the official plugin, so no additional language packs are required! 
 
 -------------------------------
 Settings: 
