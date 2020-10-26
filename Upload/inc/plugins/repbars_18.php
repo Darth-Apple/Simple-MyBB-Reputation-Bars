@@ -19,6 +19,11 @@ if(!defined("IN_MYBB")) {
     die("Hacking Attempt.");
 }
 
+if (defined('IN_ADMINCP')) {
+	$plugins->add_hook('admin_user_menu', 'advrepbars_admin_menu');
+	$plugins->add_hook('admin_user_action_handler', 'advrepbars_admin_menu_action_handler');	
+}
+
 if (isset($mybb->settings['repbar_18_postbit']) && $mybb->settings['repbar_18_postbit'] == 1) {
     $plugins->add_hook("postbit", "repbars_18_parse");
     $plugins->add_hook("postbit_pm", "repbars_18_parse");
@@ -257,4 +262,13 @@ function repbars_18_profile() {
 function repbars_18_loadlang () {
     global $lang; 
     $lang->load("repbars_18");
+}
+
+/* Used for populating the menu item in ACP */
+function advrepbars_admin_menu(&$sub_menu) {
+	$sub_menu[] = ['id' => 'advrepbars', 'title' => 'Advanced Reputation Bars', 'link' => 'index.php?module=user-advrepbars'];
+}
+
+function advrepbars_admin_menu_action_handler(&$actions) {
+	$actions['advrepbars'] = ['active' => 'advrepbars', 'file' => 'advrepbars.php'];
 }
