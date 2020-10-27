@@ -87,6 +87,8 @@ function repbars_18_uninstall() {
     {
         $db->write_query("DROP TABLE ".TABLE_PREFIX."advrepbars_bars");
     }
+
+    $mybb->cache->delete('advrepbars');
 }
 
 function repbars_18_activate() {

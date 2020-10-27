@@ -105,7 +105,7 @@ if (!$mybb->input['action'])
 		/* Handle missing input */
 		if (!$mybb->input['bgcolor'] ||!isset($mybb->input['level']))
 		{
-			flash_message("Either level or background color was missing, please try again", "error");
+			flash_message($lang->advrepbars_form_input_missing, "error");
 			admin_redirect("index.php?module=user-advrepbars&action=new");
 			die();
 		}
@@ -123,23 +123,26 @@ if (!$mybb->input['action'])
 			'dateline'	=> TIME_NOW
 		);
 
-		 $db->insert_query('advrepbars_bars', $insert_array);
+		$db->insert_query('advrepbars_bars', $insert_array);
 
-		 flash_message("Successfully added reputation bar", "success");
-		 admin_redirect("index.php?module=user-advrepbars");
+		/* Update Cache */
+		update_cache();
+
+		flash_message($lang->advrepbars_form_new_success, "success");
+		admin_redirect("index.php?module=user-advrepbars");
 	} else {
 		/* Generate form */
 		/* Placeholder Comment: Requires Language Abstraction for the Form:NEW */
 		$form = new Form("index.php?module=user-advrepbars&amp;action=new", "post", "advrepbars", true);
 		
-		$form_container = new FormContainer("Add New Reputation Bar");
-		$form_container->output_row("Level", "The required minimum reputation a user must achieve to have this reputation bar", $form->generate_numeric_field('level', '', array('id' => 'level', 'min' => 0), 'level'));
-		$form_container->output_row("Background Color", 'Enter a hex color code or <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient">check out linear-gradients</a> <em>Exclude \'background:\'</em>', $form->generate_text_box('bgcolor', '', array('id' => 'bgcolor'), 'bgcolor'));
-		$form_container->output_row("Font Style", "Customize the span containing the amount of reputation on the bar, this input will populate the style attribute", $form->generate_text_box('fontstyle', '', array('id' => 'fontstyle'), 'fontstyle'));		
+		$form_container = new FormContainer($lang->advrepbars_form_new_title);
+		$form_container->output_row($lang->advrepbars_form_input_level, $lang->advrepbars_form_input_level_desc, $form->generate_numeric_field('level', '', array('id' => 'level', 'min' => 0), 'level'));
+		$form_container->output_row($lang->advrepbars_form_input_bgcolor, $lang->advrepbars_form_input_bgcolor_desc, $form->generate_text_box('bgcolor', '', array('id' => 'bgcolor'), 'bgcolor'));
+		$form_container->output_row($lang->advrepbars_form_input_fontstyle, $lang->advrepbars_form_input_fontstyle_desc, $form->generate_text_box('fontstyle', '', array('id' => 'fontstyle'), 'fontstyle'));		
 	
 		$form_container->end();
 		$buttons = array();
-		$buttons[] = $form->generate_submit_button("Save Reputation Bar");
+		$buttons[] = $form->generate_submit_button($lang->advrepbars_form_submit_save);
 
 		$form->output_submit_wrapper($buttons);
 		$form->end();
@@ -188,6 +191,9 @@ if (!$mybb->input['action'])
 
 		 $db->update_query('advrepbars_bars', $update_array, "bid='{$stripped_bid}'");
 
+		/* Update Cache */
+		update_cache();
+
 		 flash_message("Successfully saved reputation bar", "success");
 		 admin_redirect("index.php?module=user-advrepbars");
 	} else {
@@ -201,7 +207,7 @@ if (!$mybb->input['action'])
 		if (empty($repbar))
 		{
 			/* Reputation Bar does not exist */
-			flash_message("Reputation bar does not exist and cannot be edited", "error");
+			flash_message($lang->advrepbars_form_edit_error, "error");
 			admin_redirect("index.php?module=user-advrepbars");
 			die();
 		}
@@ -209,15 +215,15 @@ if (!$mybb->input['action'])
 		/* Placeholder Comment: Requires Language Abstraction for the Form:EDIT */
 		$form = new Form("index.php?module=user-advrepbars&amp;action=edit", "post", "advrepbars", true);
 		
-		$form_container = new FormContainer("Add New Reputation Bar");
+		$form_container = new FormContainer($lang->advrepbars_form_edit_title);
 		echo $form->generate_hidden_field('bid', $stripped_bid);
-		$form_container->output_row("Level", "The required minimum reputation a user must achieve to have this reputation bar", $form->generate_numeric_field('level', $repbar['level'], array('id' => 'level', 'min' => 0), 'level'));
-		$form_container->output_row("Background Color", 'Enter a hex color code or <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient">check out linear-gradients</a> <em>Exclude \'background:\'</em>', $form->generate_text_box('bgcolor', $repbar['bgcolor'], array('id' => 'bgcolor'), 'bgcolor'));
-		$form_container->output_row("Font Style", "Customize the span containing the amount of reputation on the bar, this input will populate the style attribute", $form->generate_text_box('fontstyle', $repbar['fontstyle'], array('id' => 'fontstyle'), 'fontstyle'));		
+		$form_container->output_row($lang->advrepbars_form_input_level, $lang->advrepbars_form_input_level_desc, $form->generate_numeric_field('level', $repbar['level'], array('id' => 'level', 'min' => 0), 'level'));
+		$form_container->output_row($lang->advrepbars_form_input_bgcolor, $lang->advrepbars_form_input_bgcolor_desc, $form->generate_text_box('bgcolor', $repbar['bgcolor'], array('id' => 'bgcolor'), 'bgcolor'));
+		$form_container->output_row($lang->advrepbars_form_input_fontstyle, $lang->advrepbars_form_input_fontstyle_desc, $form->generate_text_box('fontstyle', $repbar['fontstyle'], array('id' => 'fontstyle'), 'fontstyle'));		
 	
 		$form_container->end();
 		$buttons = array();
-		$buttons[] = $form->generate_submit_button("Save Reputation Bar");
+		$buttons[] = $form->generate_submit_button($lang->advrepbars_form_submit_save);
 
 		$form->output_submit_wrapper($buttons);
 		$form->end();
@@ -231,20 +237,41 @@ if (!$mybb->input['action'])
 
 	if (empty($repbar))
 	{
-		flash_message("Could not delete reputation bar, the bar does not exist", "error");
+		flash_message($lang->advrepbars_form_delete_error, "error");
 		admin_redirect("index.php?module=user-advrepbars");
 		die();
 	} else {
 		/* Delete row */
 		$db->delete_query("advrepbars_bars", "bid='{$stripped_bid}'");
-		
-		flash_message("Successfully deleted reputation bar", "success");
+
+		/* Update Cache */
+		update_cache();
+
+		flash_message($lang->advrepbars_form_delete_success, "success");
 		admin_redirect("index.php?module=user-advrepbars");
 	}
 } else 
 {
-	flash_message("Unexpected error: The action you tried to access does not exist.", "error");
+	flash_message($lang->advrepbars_page_not_found, "error");
 	admin_redirect("index.php?module=user-advrepbars");
 }
 
 $page->output_footer($lang->advrepbars_title_acronym);
+
+/* Cache Functionality */
+function update_cache()
+{
+	global $mybb, $db;
+
+	$advrepbars = array();
+
+	/* Grab all Reputation Bars */
+	$advrepbars_query = $db->simple_select("advrepbars_bars", "*", "", array("order_by" => "level", "order_dir" => "ASC"));
+	
+	while ($advrepbar = $db->fetch_array($advrepbars_query))
+	{
+		array_push($advrepbars, $advrepbar);
+	}
+
+	$mybb->cache->update('advrepbars', $advrepbars);
+}
