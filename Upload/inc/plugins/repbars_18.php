@@ -55,7 +55,42 @@ function repbars_18_info() {
 	);
 }
 
-function repbars_18_activate () {
+function repbars_18_install() {
+    global $db;
+
+    if (!$db->table_exists("advrepbars_bars"))
+    {
+        $db->write_query("CREATE TABLE ".TABLE_PREFIX."advrepbars_bars (
+            bid int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            level int NOT NULL,
+            bgcolor varchar(255),
+            fontstyle varchar(255),
+            disporder int NOT NULL DEFAULT 0,
+            dateline int(11) NOT NULL
+        );");
+    }
+}
+
+function repbars_18_is_installed() {
+    global $db;
+
+    if ($db->table_exists("advrepbars_bars")) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function repbars_18_uninstall() {
+    global $db;
+
+    if ($db->table_exists("advrepbars_bars"))
+    {
+        $db->write_query("DROP TABLE ".TABLE_PREFIX."advrepbars_bars");
+    }
+}
+
+function repbars_18_activate() {
 	require MYBB_ROOT.'/inc/adminfunctions_templates.php';
     global $db, $lang;
     $lang->load("repbars_18");
@@ -165,7 +200,7 @@ function repbars_18_activate () {
     }
 }
 
-function repbars_18_deactivate () {
+function repbars_18_deactivate() {
     global $db; 
     require MYBB_ROOT.'/inc/adminfunctions_templates.php';
     
@@ -188,7 +223,7 @@ function repbars_18_deactivate () {
     }
 }
 
-function repbars_18_parse (&$post) {
+function repbars_18_parse(&$post) {
     global $mybb, $templates, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
 
     $max_width = "";
@@ -259,7 +294,7 @@ function repbars_18_profile() {
     eval("\$memprofile['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
 }
 
-function repbars_18_loadlang () {
+function repbars_18_loadlang() {
     global $lang; 
     $lang->load("repbars_18");
 }

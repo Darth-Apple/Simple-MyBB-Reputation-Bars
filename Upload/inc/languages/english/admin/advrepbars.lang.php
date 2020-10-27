@@ -11,6 +11,6 @@ $l['advrepbars_new'] = "New Reputation Bar";
 $l['advrepbars_new_desc'] = "This page allows you to create a new reputation bar.";
 
 $l['advrepbars_edit'] = "Edit Reputation Bar";
-$l['advrepbars_manage_desc'] = "This page allows you to edit an existing reputation bar.";
+$l['advrepbars_edit_desc'] = "This page allows you to edit an existing reputation bar.";
 
 /* Form details */
