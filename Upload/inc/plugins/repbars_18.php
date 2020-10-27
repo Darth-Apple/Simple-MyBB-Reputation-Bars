@@ -81,7 +81,7 @@ function repbars_18_is_installed() {
 }
 
 function repbars_18_uninstall() {
-    global $db;
+    global $db, $mybb;
 
     if ($db->table_exists("advrepbars_bars"))
     {
@@ -189,11 +189,26 @@ function repbars_18_activate() {
     {$br_above_label}
     <div style="margin-top: 3px; padding: 0px; padding-right:3px; margin-right: 5px; {$max_width}" title="{$lang->repbars_18_reputation}">
         <div class="rep-meter" style="border-radius: 4px; padding: 2px; padding-right: 5px; border: 1px solid #cccccc; width: 100%; ">
-            <div class="rep-meter-inner" style="background-color: {$background}; color: {$color}; width: {$rep}%; text-align: left; padding-left:2px; ">
-                {$post[\'reputation\']}
+            <div class="rep-meter-inner" style="background: {$background}; color: {$color}; width: {$rep}%; text-align: left; padding-left:2px; ">
+                <span style="{$fontstyle}">{$post[\'reputation\']}</span>
             </div>
         </div>    
     </div>'; 
+
+    $templates['repbars_18_legend'] = '
+<html>
+	<head>
+		<title>Advanced Reputation Bars - Legend</title>
+		{$headerinclude}
+	</head>
+<body>
+	{$header}
+	<div class="border-wrapper">
+		{$advrepbars_templ}
+	</div>
+	{$footer}
+</body>
+</html>'; 
 
     foreach($templates as $title => $template_new){
         $template = array('title' => $db->escape_string($title), 'template' => $db->escape_string($template_new), 'sid' => '-1', 'dateline' => TIME_NOW, 'version' => '1800');
@@ -218,7 +233,7 @@ function repbars_18_deactivate() {
     rebuild_settings();
 
     // Remove templates
-    $templates = array('repbars_18_bar'); // remove templates
+    $templates = array('repbars_18_bar', 'repbars_18_legend'); // remove templates
     foreach($templates as $template) {
         $db->delete_query('templates', "title = '{$template}'");
     }
