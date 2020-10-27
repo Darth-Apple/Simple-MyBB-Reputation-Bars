@@ -61,7 +61,7 @@ if (!$mybb->input['action'])
 		/* Generate Preview */
 		$row['preview_bar'] = '<div style="margin-top: 3px; padding: 0px; padding-right:3px; margin-right: 5px; max-width: 200px;text-align:center;margin:auto;" title="Preview">
         <div class="rep-meter" style="border-radius: 4px; padding: 2px; padding-right: 5px; border: 1px solid #cccccc; width: 100%; ">
-            <div class="rep-meter-inner" style="background-color: '.$row['bgcolor'].'; width: 25%; text-align: left; padding-left:2px; ">
+            <div class="rep-meter-inner" style="background: '.$row['bgcolor'].'; width: 75%; text-align: left; padding-left:2px; ">
                 <span style="'.$row["fontstyle"].'">'.$row["level"].'</span>
             </div>
         </div>    
