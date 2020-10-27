@@ -65,7 +65,6 @@ function repbars_18_install() {
             level int NOT NULL,
             bgcolor varchar(255),
             fontstyle varchar(255),
-            disporder int NOT NULL DEFAULT 0,
             dateline int(11) NOT NULL
         );");
     }
