@@ -14,18 +14,23 @@ add_breadcrumb("Reputation Bars Legend", "advrepbars.php");
 $advrepbars = $mybb->cache->read('advrepbars');
 
 $advrepbars_templ = '';
-
-foreach ($advrepbars as $advrepbar)
+if (!empty($advrepbars))
 {
-    $post['reputation'] = $mybb->user['reputation'];
-    $rep = $mybb->user['reputation'];
-    $color = '';
-    $background = $advrepbar['bgcolor'];
-    $fontstyle = $advrepbar['fontstyle'];
-    $max_width = '300px';
-    eval("\$repbar = \"".$templates->get("repbars_18_bar")."\";");
-    $advrepbars_templ .= $repbar;
+    foreach ($advrepbars as $advrepbar)
+    {
+        $post['reputation'] = $mybb->user['reputation'] == 0 ? 40 : $mybb->user['reputation'];
+        $rep = $post['reputation'];
+        $color = '';
+        $background = $advrepbar['bgcolor'];
+        $fontstyle = $advrepbar['fontstyle'];
+        $max_width = '300px';
+        eval("\$repbar = \"".$templates->get("repbars_18_bar")."\";");
+        $repbar = '<div style="margin-right:10px;width:200px;display:inline-block"><fieldset><legend>'.$advrepbar['name'].'</legend>'.$repbar.'</fieldset></div>';
+
+        $advrepbars_templ .= $repbar;
+    }
 }
+
 
 eval("\$repbars_18_legend = \"".$templates->get("repbars_18_legend")."\";");
 output_page($repbars_18_legend);

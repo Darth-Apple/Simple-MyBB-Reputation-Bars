@@ -21,7 +21,7 @@ $l['advrepbars_form_new_title'] = "Add new Reputation Bar";
 $l['advrepbars_form_edit_title'] = "Edit an existing Reputation Bar";
 
 /* ERRORS */
-$l['advrepbars_form_input_missing'] = "Either level or background color was missing, please try again";
+$l['advrepbars_form_input_missing'] = "Either name, level or background color was missing, please try again";
 $l['advrepbars_form_delete_error'] = "Could not delete reputation bar, the bar does not exist";
 $l['advrepbars_form_edit_error'] = "Reputation bar does not exist and cannot be edited";
 

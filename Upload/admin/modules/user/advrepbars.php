@@ -50,10 +50,11 @@ if (!$mybb->input['action'])
 
 	/* Construct the table */
 	$table = new Table;
-	$table->construct_header("Preview", ['width' => '30%', 'class' => 'align_center']);
-	$table->construct_header("Level", ['width' => '30%', 'class' => 'align_center']);
-	$table->construct_header("Font Style", ['width' => '30%', 'class' => 'align_center']);
-	$table->construct_header("OPTIONS", ['width' => '10%', 'class' => 'align_center']);
+	$table->construct_header("Name", ['width' => '22%', 'class' => 'align_center']);
+	$table->construct_header("Preview", ['width' => '22%', 'class' => 'align_center']);
+	$table->construct_header("Level", ['width' => '22%', 'class' => 'align_center']);
+	$table->construct_header("Font Style", ['width' => '22%', 'class' => 'align_center']);
+	$table->construct_header("OPTIONS", ['width' => '12%', 'class' => 'align_center']);
 
 	/* Generate Dynamic Content */
 	foreach ($advrepbars as $row)
@@ -70,6 +71,7 @@ if (!$mybb->input['action'])
 		/* Generate Font Style Preview */
 		$row['preview_style'] = '<span style="'.$row['fontstyle'].'">Font Preview: '.$row['bid'].'</span>';
 
+		$table->construct_cell($row['name'], ['class' => 'align_center']);
 		$table->construct_cell($row['preview_bar'], ['class' => 'align_center']);
 		$table->construct_cell($row['level'], ['class' => 'align_center']);
 		$table->construct_cell($row['preview_style'], ['class' => 'align_center']);
@@ -103,7 +105,7 @@ if (!$mybb->input['action'])
 		/* This is a form submit */
 
 		/* Handle missing input */
-		if (!$mybb->input['bgcolor'] ||!isset($mybb->input['level']))
+		if (!$mybb->input['name'] || !$mybb->input['bgcolor'] || !isset($mybb->input['level']))
 		{
 			flash_message($lang->advrepbars_form_input_missing, "error");
 			admin_redirect("index.php?module=user-advrepbars&action=new");
@@ -117,6 +119,7 @@ if (!$mybb->input['action'])
 		}
 
 		$insert_array = array(
+			'name'		=> $db->escape_string($mybb->input['name']),
 			'level'		=> $db->escape_string($mybb->input['level']),
 			'bgcolor' 	=> $db->escape_string($mybb->input['bgcolor']),
 			'fontstyle'	=> $fontstyle,
@@ -136,6 +139,7 @@ if (!$mybb->input['action'])
 		$form = new Form("index.php?module=user-advrepbars&amp;action=new", "post", "advrepbars", true);
 		
 		$form_container = new FormContainer($lang->advrepbars_form_new_title);
+		$form_container->output_row("Name", 'Give your reputation bar a name, this is used only for the legends page <a href="../advrepbars.php">viewed here</a>', $form->generate_text_box('name', '', array('id' => 'name'), 'name'));
 		$form_container->output_row($lang->advrepbars_form_input_level, $lang->advrepbars_form_input_level_desc, $form->generate_numeric_field('level', '', array('id' => 'level', 'min' => 0), 'level'));
 		$form_container->output_row($lang->advrepbars_form_input_bgcolor, $lang->advrepbars_form_input_bgcolor_desc, $form->generate_text_box('bgcolor', '', array('id' => 'bgcolor'), 'bgcolor'));
 		$form_container->output_row($lang->advrepbars_form_input_fontstyle, $lang->advrepbars_form_input_fontstyle_desc, $form->generate_text_box('fontstyle', '', array('id' => 'fontstyle'), 'fontstyle'));		
@@ -157,10 +161,10 @@ if (!$mybb->input['action'])
 		/* This is a form submit */
 
 		/* Handle missing input */
-		if (!$mybb->input['bgcolor'] ||!isset($mybb->input['level']))
+		if (!$mybb->input['name'] || !$mybb->input['bgcolor'] || !isset($mybb->input['level']))
 		{
-			flash_message("Either level or background color was missing, please try again", "error");
-			admin_redirect("index.php?module=user-advrepbars&action=new");
+			flash_message($lang->advrepbars_form_input_missing, "error");
+			admin_redirect("index.php?module=user-advrepbars&action=edit&bid=".$mybb->get_input('bid', MyBB::INPUT_INT));
 			die();
 		}
 
@@ -184,6 +188,7 @@ if (!$mybb->input['action'])
 		}
 
 		$update_array = array(
+			'name'		=> $db->escape_string($mybb->input['name']),
 			'level'		=> $db->escape_string($mybb->input['level']),
 			'bgcolor' 	=> $db->escape_string($mybb->input['bgcolor']),
 			'fontstyle'	=> $fontstyle
@@ -217,6 +222,7 @@ if (!$mybb->input['action'])
 		
 		$form_container = new FormContainer($lang->advrepbars_form_edit_title);
 		echo $form->generate_hidden_field('bid', $stripped_bid);
+		$form_container->output_row("Name", 'Give your reputation bar a name, this is used only for the legends page <a href="../advrepbars.php">viewed here</a>', $form->generate_text_box('name', $repbar['name'], array('id' => 'name'), 'name'));
 		$form_container->output_row($lang->advrepbars_form_input_level, $lang->advrepbars_form_input_level_desc, $form->generate_numeric_field('level', $repbar['level'], array('id' => 'level', 'min' => 0), 'level'));
 		$form_container->output_row($lang->advrepbars_form_input_bgcolor, $lang->advrepbars_form_input_bgcolor_desc, $form->generate_text_box('bgcolor', $repbar['bgcolor'], array('id' => 'bgcolor'), 'bgcolor'));
 		$form_container->output_row($lang->advrepbars_form_input_fontstyle, $lang->advrepbars_form_input_fontstyle_desc, $form->generate_text_box('fontstyle', $repbar['fontstyle'], array('id' => 'fontstyle'), 'fontstyle'));		

@@ -62,6 +62,7 @@ function repbars_18_install() {
     {
         $db->write_query("CREATE TABLE ".TABLE_PREFIX."advrepbars_bars (
             bid int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            name varchar(255) NOT NULL,
             level int NOT NULL,
             bgcolor varchar(255),
             fontstyle varchar(255),
