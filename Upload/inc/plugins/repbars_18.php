@@ -133,50 +133,6 @@ function repbars_18_activate() {
         'gid' => $group['gid']
     );
 
-    $settings[] = array(
-        'name' => 'repbar_18_min',
-        'title' => $db->escape_string($lang->repbars_18_min),
-        'description' => $db->escape_string($lang->repbars_18_min_desc),
-        'optionscode' => 'numeric',
-        'value' => '0',
-        'disporder' => 1,
-        'isdefault' => 0,
-        'gid' => $group['gid']
-    );		
-
-    $settings[] = array(
-        'name' => 'repbar_18_max',
-        'title' => $db->escape_string($lang->repbars_18_max),
-        'description' => $db->escape_string($lang->repbars_18_max_desc),
-        'optionscode' => 'numeric',
-        'value' => '50',
-        'disporder' => 2,
-        'isdefault' => 0,
-        'gid' => $group['gid']
-    );		
-
-    $settings[] = array(
-        'name' => 'repbar_18_background',
-        'title' => $db->escape_string($lang->repbars_18_bgcolor),
-        'description' => $db->escape_string($lang->repbars_18_bgcolor_desc),
-        'optionscode' => 'text',
-        'value' => '#22a232',
-        'disporder' => 3,
-        'isdefault' => 0,
-        'gid' => $group['gid']
-    );		
-
-    $settings[] = array(
-        'name' => 'repbar_18_textcolor',
-        'title' => $db->escape_string($lang->repbars_18_textcolor),
-        'description' => $db->escape_string($lang->repbars_18_textcolor_desc),
-        'optionscode' => 'text',
-        'value' => '#ffffff',
-        'disporder' => 4,
-        'isdefault' => 0,
-        'gid' => $group['gid']
-    );		
-
     foreach($settings as $array => $setting) {
         $db->insert_query("settings", $setting); // lots of queries
     }
@@ -238,6 +194,7 @@ function repbars_18_deactivate() {
     }
 }
 
+/*
 function repbars_18_parse(&$post) {
     global $mybb, $templates, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
 
@@ -308,6 +265,7 @@ function repbars_18_profile() {
     $memprofile['reputation'] = (int) $memprofile['reputation'];
     eval("\$memprofile['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
 }
+*/
 
 function repbars_18_loadlang() {
     global $lang; 
