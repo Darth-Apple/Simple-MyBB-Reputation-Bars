@@ -66,6 +66,37 @@ function repbars_18_install() {
             fontstyle varchar(255),
             dateline int(11) NOT NULL
         );");
+    
+        // Insert dummy data
+        $repbar = array(
+            "name"  => "Rookie",
+            "level" => 10,
+            "bgcolor"   => "linear-gradient(#e66465, #9198e5);",
+            "fontstyle" => "font-weight:bold;color:#fff;text-align:center;",
+            "dateline"  => TIME_NOW
+        );
+
+        $db->insert_query("advrepbars_bars", $repbar);
+        
+        $repbar = array(
+            "name"  => "Expert",
+            "level" => 20,
+            "bgcolor"   => "linear-gradient(#b11489, #191169);",
+            "fontstyle" => "font-weight:bold;color:#fff;text-align:center;",
+            "dateline"  => TIME_NOW
+        );
+
+        $db->insert_query("advrepbars_bars", $repbar);
+
+        $repbar = array(
+            "name"  => "Master",
+            "level" => 30,
+            "bgcolor"   => "linear-gradient(#dd4195, #ab4615);",
+            "fontstyle" => "font-weight:bold;color:#fff;text-align:center;",
+            "dateline"  => TIME_NOW
+        );
+
+        $db->insert_query("advrepbars_bars", $repbar);
     }
 }
 
@@ -195,10 +226,10 @@ function repbars_18_deactivate() {
     }
 }
 
-/*
 function repbars_18_parse(&$post) {
     global $mybb, $templates, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
 
+    /*
     $max_width = "";
     $br_above_label = "<br />";    
     $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
@@ -229,11 +260,17 @@ function repbars_18_parse(&$post) {
     }
     $post['reputation'] = (int) $post['reputation'];
     eval("\$post['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
+    */
+
+    // NEW CODE BELOW
+    // Grab all Reputation Bars
+    $advrepbars = $mybb->cache->read('advrepbars');
 }
 
 function repbars_18_profile() {
     global $mybb, $templates, $memprofile, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
     
+    /*
     $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
     $max_width = "max-width: 200px;";
     $br_above_label = "<br />";
@@ -265,8 +302,12 @@ function repbars_18_profile() {
     $post['reputation'] = (int) $memprofile['reputation'];
     $memprofile['reputation'] = (int) $memprofile['reputation'];
     eval("\$memprofile['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
+    */
+
+    // NEW CODE BELOW
+    // Grab all Reputation Bars
+    $advrepbars = $mybb->cache->read('advrepbars');
 }
-*/
 
 /* Load Reputation Bar Language File */
 function repbars_18_loadlang() {
