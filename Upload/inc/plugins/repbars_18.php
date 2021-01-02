@@ -19,6 +19,11 @@ if(!defined("IN_MYBB")) {
     die("Hacking Attempt.");
 }
 
+if (defined('IN_ADMINCP')) {
+	$plugins->add_hook('admin_user_menu', 'advrepbars_admin_menu');
+	$plugins->add_hook('admin_user_action_handler', 'advrepbars_admin_menu_action_handler');	
+}
+
 if (isset($mybb->settings['repbar_18_postbit']) && $mybb->settings['repbar_18_postbit'] == 1) {
     $plugins->add_hook("postbit", "repbars_18_parse");
     $plugins->add_hook("postbit_pm", "repbars_18_parse");
@@ -50,7 +55,42 @@ function repbars_18_info() {
 	);
 }
 
-function repbars_18_activate () {
+function repbars_18_install() {
+    global $db;
+
+    if (!$db->table_exists("advrepbars_bars"))
+    {
+        $db->write_query("CREATE TABLE ".TABLE_PREFIX."advrepbars_bars (
+            bid int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            name varchar(255) NOT NULL,
+            level int NOT NULL,
+            bgcolor varchar(255),
+            fontstyle varchar(255),
+            dateline int(11) NOT NULL
+        );");
+    }
+}
+
+function repbars_18_is_installed() {
+    global $db;
+
+    if ($db->table_exists("advrepbars_bars")) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function repbars_18_uninstall() {
+    global $db;
+
+    if ($db->table_exists("advrepbars_bars"))
+    {
+        $db->write_query("DROP TABLE ".TABLE_PREFIX."advrepbars_bars");
+    }
+}
+
+function repbars_18_activate() {
 	require MYBB_ROOT.'/inc/adminfunctions_templates.php';
     global $db, $lang;
     $lang->load("repbars_18");
@@ -148,11 +188,26 @@ function repbars_18_activate () {
     {$br_above_label}
     <div style="margin-top: 3px; padding: 0px; padding-right:3px; margin-right: 5px; {$max_width}" title="{$lang->repbars_18_reputation}">
         <div class="rep-meter" style="border-radius: 4px; padding: 2px; padding-right: 5px; border: 1px solid #cccccc; width: 100%; ">
-            <div class="rep-meter-inner" style="background-color: {$background}; color: {$color}; width: {$rep}%; text-align: left; padding-left:2px; ">
-                {$post[\'reputation\']}
+            <div class="rep-meter-inner" style="background: {$background}; color: {$color}; width: {$rep}%; text-align: left; padding-left:2px; ">
+                <span style="{$fontstyle}">{$post[\'reputation\']}</span>
             </div>
         </div>    
     </div>'; 
+
+    $templates['repbars_18_legend'] = '
+<html>
+	<head>
+		<title>Advanced Reputation Bars - Legend</title>
+		{$headerinclude}
+	</head>
+<body>
+	{$header}
+	<div class="border-wrapper">
+		{$advrepbars_templ}
+	</div>
+	{$footer}
+</body>
+</html>'; 
 
     foreach($templates as $title => $template_new){
         $template = array('title' => $db->escape_string($title), 'template' => $db->escape_string($template_new), 'sid' => '-1', 'dateline' => TIME_NOW, 'version' => '1800');
@@ -160,7 +215,7 @@ function repbars_18_activate () {
     }
 }
 
-function repbars_18_deactivate () {
+function repbars_18_deactivate() {
     global $db; 
     require MYBB_ROOT.'/inc/adminfunctions_templates.php';
     
@@ -177,13 +232,13 @@ function repbars_18_deactivate () {
     rebuild_settings();
 
     // Remove templates
-    $templates = array('repbars_18_bar'); // remove templates
+    $templates = array('repbars_18_bar', 'repbars_18_legend'); // remove templates
     foreach($templates as $template) {
         $db->delete_query('templates', "title = '{$template}'");
     }
 }
 
-function repbars_18_parse (&$post) {
+function repbars_18_parse(&$post) {
     global $mybb, $templates, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
 
     $max_width = "";
@@ -254,7 +309,16 @@ function repbars_18_profile() {
     eval("\$memprofile['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
 }
 
-function repbars_18_loadlang () {
+function repbars_18_loadlang() {
     global $lang; 
     $lang->load("repbars_18");
+}
+
+/* Used for populating the menu item in ACP */
+function advrepbars_admin_menu(&$sub_menu) {
+	$sub_menu[] = ['id' => 'advrepbars', 'title' => 'Advanced Reputation Bars', 'link' => 'index.php?module=user-advrepbars'];
+}
+
+function advrepbars_admin_menu_action_handler(&$actions) {
+	$actions['advrepbars'] = ['active' => 'advrepbars', 'file' => 'advrepbars.php'];
 }
