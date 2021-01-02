@@ -45,7 +45,7 @@ function repbars_18_info() {
 		'name'	        =>  htmlspecialchars($lang->repbars_18_title),
 		'description'	=>  htmlspecialchars($lang->repbars_18_desc),
 		'website'		=>  'http://www.kasscode.com',
-		'author'		=>  'Xazin',
+		'author'		=>  'Xazin / GodLess101',
 		'authorsite'	=>  'http://www.kasscode.com',
 		'codename' 		=>  'repbars_18',
 		'version'		=>  '2.0',
@@ -164,7 +164,7 @@ function repbars_18_activate() {
     );
 
     foreach($settings as $array => $setting) {
-        $db->insert_query("settings", $setting); // lots of queries
+        $db->insert_query("settings", $setting);
     }
 
     rebuild_settings();
@@ -173,9 +173,9 @@ function repbars_18_activate() {
     $templates = array();
     $templates['repbars_18_bar'] = '
     {$br_above_label}
-    <div style="margin-top: 3px; padding: 0px; padding-right:3px; margin-right: 5px; {$max_width}" title="{$lang->repbars_18_reputation}">
-        <div class="rep-meter" style="border-radius: 4px; padding: 2px; padding-right: 5px; border: 1px solid #cccccc; width: 100%; ">
-            <div class="rep-meter-inner" style="background: {$background}; color: {$color}; width: {$rep}%; text-align: left; padding-left:2px; ">
+    <div style="margin-top:3px;padding:0px;padding-right:3px;margin-right:5px;{$max_width};width:200px" title="{$lang->repbars_18_reputation}">
+        <div class="rep-meter" style="border-radius:4px;padding:2px;padding-right:5px;border:1px solid #cccccc;width:100%; ">
+            <div class="rep-meter-inner" style="background:{$background};width:{$rep}%;min-width:25px;text-align:left;padding-left:2px;">
                 <span style="{$fontstyle}">{$post[\'reputation\']}</span>
             </div>
         </div>    
@@ -265,6 +265,64 @@ function repbars_18_parse(&$post) {
     // NEW CODE BELOW
     // Grab all Reputation Bars
     $advrepbars = $mybb->cache->read('advrepbars');
+
+    $max_width = "";
+    $br_above_label = "<br />"; 
+
+    $max = count($advrepbars)-1; // -1 due to 0 being the index counter
+
+    if ($max <= 0) {
+        // No reputation bars
+        return;
+    } else {
+        // There is at least 1 reputation bar
+        // Find out which level the user is at
+        $counter = 0;
+        foreach ($advrepbars as $repbar) {
+            if ($counter == 0 && $post['reputation'] <= $repbar['level'])
+            {
+                // Lowest Reputation Bar
+                $currentbar = $repbar;
+                $nextbar = $advrepbars[$counter+1];
+            break;
+            } elseif ($counter == $max && $post['reputation'] >= $repbar['level']) {
+                // Highest Reputation Bar
+                $currentbar = $repbar;
+            break;
+            } elseif ($post['reputation'] >= $repbar['level'] && $post['reputation'] < $advrepbars[$counter+1]['level']) {
+                // Somewhere in the middle
+                $currentbar = $repbar;
+                $nextbar = $advrepbars[$counter+1];
+            break;
+            }
+
+            $counter++;
+        }
+
+        $background = $currentbar['bgcolor'];
+        $fontstyle = $currentbar['fontstyle'];
+
+        // Calculate reputation bar fill
+        if (!empty($nextbar))
+        {
+            // This one has a next reputation level
+            if ($counter == 0)
+            {
+                $rep = $post['reputation'];
+                $rep = $rep / ($nextbar['level'] - $currentbar['level']); 
+                $rep = (int)($rep * 100);
+            } else {
+                $rep = $post['reputation'] - $currentbar['level'];
+                $rep = $rep / ($nextbar['level'] - $currentbar['level']); 
+                $rep = (int)($rep * 100);
+            }
+        } else {
+            // The reputation bar is the highest level
+            $rep = 100;
+        }
+
+        eval("\$post['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";");    
+    }
 }
 
 function repbars_18_profile() {
