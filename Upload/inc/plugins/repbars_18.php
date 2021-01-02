@@ -37,8 +37,6 @@ if (isset($mybb->settings['repbar_18_profile']) && $mybb->settings['repbar_18_pr
     $plugins->add_hook("member_profile_end", "repbars_18_profile");
 }
 
-
-
 function repbars_18_info() {
     global $lang; 
     $lang->load("repbars_18");
@@ -46,11 +44,11 @@ function repbars_18_info() {
 	return array(
 		'name'	        =>  htmlspecialchars($lang->repbars_18_title),
 		'description'	=>  htmlspecialchars($lang->repbars_18_desc),
-		'website'		=>  'http://www.makestation.net',
-		'author'		=>  'Darth Apple',
-		'authorsite'	=>  'http://www.makestation.net',
+		'website'		=>  'http://www.kasscode.com',
+		'author'		=>  'Xazin',
+		'authorsite'	=>  'http://www.kasscode.com',
 		'codename' 		=>  'repbars_18',
-		'version'		=>  '1.0',
+		'version'		=>  '2.0',
 		"compatibility"	=>  "18*"
 	);
 }
@@ -91,8 +89,9 @@ function repbars_18_uninstall() {
 }
 
 function repbars_18_activate() {
-	require MYBB_ROOT.'/inc/adminfunctions_templates.php';
     global $db, $lang;
+
+	require MYBB_ROOT.'/inc/adminfunctions_templates.php';
     $lang->load("repbars_18");
     
     find_replace_templatesets("postbit", '#'.preg_quote('{$post[\'groupimage\']}').'#', '{$post[\'groupimage\']} {$post[\'repbars_18\']}');	
@@ -136,9 +135,10 @@ function repbars_18_activate() {
     foreach($settings as $array => $setting) {
         $db->insert_query("settings", $setting); // lots of queries
     }
+
     rebuild_settings();
 
-    // Enter templates. 
+    // Insert templates
     $templates = array();
     $templates['repbars_18_bar'] = '
     {$br_above_label}
@@ -185,6 +185,7 @@ function repbars_18_deactivate() {
     $groupid = $db->fetch_field($query, 'gid');
     $db->delete_query('settings','gid = "'.$groupid.'"');
     $db->delete_query('settinggroups','gid = "'.$groupid.'"');
+
     rebuild_settings();
 
     // Remove templates
@@ -267,12 +268,13 @@ function repbars_18_profile() {
 }
 */
 
+/* Load Reputation Bar Language File */
 function repbars_18_loadlang() {
     global $lang; 
     $lang->load("repbars_18");
 }
 
-/* Used for populating the menu item in ACP */
+/* AdminCP Functions - Do not edit below here */
 function advrepbars_admin_menu(&$sub_menu) {
 	$sub_menu[] = ['id' => 'advrepbars', 'title' => 'Advanced Reputation Bars', 'link' => 'index.php?module=user-advrepbars'];
 }
