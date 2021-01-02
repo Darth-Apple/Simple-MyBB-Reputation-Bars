@@ -12,8 +12,7 @@ _Note: The plugin has recently been remade, as such we hope you can help by repo
  - Enable from ACP -> Configuration -> Plugins
  - Setup your reputation bars from ACP -> Users & Groups -> Advanced Reputation Bars
 
- - A special thanks to @tc4me at https://autism4all.at for providing the German translation. We have included it with the official plugin, so no additional language packs are required! 
- - A special thanks to @Darth-Apple for providing the base of the plugin before expansion.
+ _A special thanks to @Darth-Apple for providing the base of the plugin before expansion._
 
 **Settings:** 
 
@@ -22,7 +21,7 @@ Two settings are provided:
  - Enable/Disable on Postbit
  - Enable/Disable on Profile
 
-And inside 'AdminCP -> Users & Groups' there is a submenu named "Advanced Reputation Bars" where you can create and set up your reputation bars and the rep required*.
+And inside 'AdminCP -> Users & Groups' there is a submenu named "Advanced Reputation Bars" where you can create and set up your reputation bars and the reputation required*.
 
 *The setup for your reputation bars should follow a simple logic, the conditions are displayed here:
 
