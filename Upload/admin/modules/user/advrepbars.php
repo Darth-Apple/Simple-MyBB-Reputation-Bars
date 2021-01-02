@@ -57,6 +57,8 @@ if (!$mybb->input['action'])
 	$table->construct_header("OPTIONS", ['width' => '12%', 'class' => 'align_center']);
 
 	/* Generate Dynamic Content */
+	$count = 0;
+	$max = count($advrepbars)-1;
 	foreach ($advrepbars as $row)
 	{
 		/* Generate Preview */
@@ -73,7 +75,16 @@ if (!$mybb->input['action'])
 
 		$table->construct_cell($row['name'], ['class' => 'align_center']);
 		$table->construct_cell($row['preview_bar'], ['class' => 'align_center']);
-		$table->construct_cell($row['level'], ['class' => 'align_center']);
+
+		if ($count == 0)
+		{
+			$table->construct_cell("0 - ".$row['level'], ['class' => 'align_center']);
+		} elseif ($count == $max) {
+			$table->construct_cell($row['level']." - Infinity", ['class' => 'align_center']);
+		} else {
+			$table->construct_cell($row['level']." - ".$advrepbars[$count+1]['level'], ['class' => 'align_center']);
+		}
+
 		$table->construct_cell($row['preview_style'], ['class' => 'align_center']);
 		
 		/* Construct Options for Edit and Delete */
@@ -84,6 +95,8 @@ if (!$mybb->input['action'])
 
 		/* Construct the Row */
 		$table->construct_row();
+
+		$count++;
 	}
 
 	/* In case table is empty, let us tell the user there are no bars */

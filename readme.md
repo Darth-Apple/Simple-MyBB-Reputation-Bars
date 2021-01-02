@@ -23,9 +23,9 @@ And inside 'AdminCP -> Users & Groups' there is a submenu named "Advanced Reputa
 
 *The setup for your reputation bars should follow a simple logic, the conditions are displayed here:
 
-1. The reputation bar with the lowest reputation possible is the first reputation bar any user can get. (When they reach the amount of reputation)
+1. The reputation bar with the lowest reputation possible is the first reputation bar any user can get and defaults from 0 (lowest) to the level on the reputation bar
 2. The reputation bar with the highest reputation possible acts as the "highest level", once achieved the bar will be completely filled (100% width) _Note: The persons reputation is still displayed although going above the limit_
-3. From one reputation bar to another, as long as the 'level' amount of the next bar is achieved, the user is granted that bar and it counts as 0% whereas the next bars 'level' amount counts as 100%.
+3. From one reputation bar to another, as long as the 'level' amount of the next bar is achieved, the user is granted that bar and it counts as 0% whereas the next bars' 'level' amount counts as 100%.
 
 **Templates:**
 
