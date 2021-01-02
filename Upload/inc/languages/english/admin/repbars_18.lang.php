@@ -1,6 +1,6 @@
 <?php
-$l['repbars_18_title'] = "Simple Reputation Bars";
-$l['repbars_18_desc'] = "Displays simple reputation bars on the user's postbit.";
+$l['repbars_18_title'] = "Advanced Reputation Bars";
+$l['repbars_18_desc'] = "Displays advanced reputation bars on the user's postbit.";
 
 $l['repbars_18_postbit'] = "Enable on Postbit?";
 $l['repbars_18_postbit_desc'] = "This setting determines whether this plugin displays the reputation bar on posts.";
