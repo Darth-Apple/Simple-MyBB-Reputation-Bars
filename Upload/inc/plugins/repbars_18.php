@@ -37,8 +37,6 @@ if (isset($mybb->settings['repbar_18_profile']) && $mybb->settings['repbar_18_pr
     $plugins->add_hook("member_profile_end", "repbars_18_profile");
 }
 
-
-
 function repbars_18_info() {
     global $lang; 
     $lang->load("repbars_18");
@@ -46,11 +44,11 @@ function repbars_18_info() {
 	return array(
 		'name'	        =>  htmlspecialchars($lang->repbars_18_title),
 		'description'	=>  htmlspecialchars($lang->repbars_18_desc),
-		'website'		=>  'http://www.makestation.net',
-		'author'		=>  'Darth Apple',
-		'authorsite'	=>  'http://www.makestation.net',
+		'website'		=>  'http://www.kasscode.com',
+		'author'		=>  'Xazin',
+		'authorsite'	=>  'http://www.kasscode.com',
 		'codename' 		=>  'repbars_18',
-		'version'		=>  '1.0',
+		'version'		=>  '2.0',
 		"compatibility"	=>  "18*"
 	);
 }
@@ -68,6 +66,37 @@ function repbars_18_install() {
             fontstyle varchar(255),
             dateline int(11) NOT NULL
         );");
+    
+        // Insert dummy data
+        $repbar = array(
+            "name"  => "Rookie",
+            "level" => 10,
+            "bgcolor"   => "linear-gradient(#e66465, #9198e5);",
+            "fontstyle" => "font-weight:bold;color:#fff;text-align:center;",
+            "dateline"  => TIME_NOW
+        );
+
+        $db->insert_query("advrepbars_bars", $repbar);
+        
+        $repbar = array(
+            "name"  => "Expert",
+            "level" => 20,
+            "bgcolor"   => "linear-gradient(#b11489, #191169);",
+            "fontstyle" => "font-weight:bold;color:#fff;text-align:center;",
+            "dateline"  => TIME_NOW
+        );
+
+        $db->insert_query("advrepbars_bars", $repbar);
+
+        $repbar = array(
+            "name"  => "Master",
+            "level" => 30,
+            "bgcolor"   => "linear-gradient(#dd4195, #ab4615);",
+            "fontstyle" => "font-weight:bold;color:#fff;text-align:center;",
+            "dateline"  => TIME_NOW
+        );
+
+        $db->insert_query("advrepbars_bars", $repbar);
     }
 }
 
@@ -91,8 +120,9 @@ function repbars_18_uninstall() {
 }
 
 function repbars_18_activate() {
-	require MYBB_ROOT.'/inc/adminfunctions_templates.php';
     global $db, $lang;
+
+	require MYBB_ROOT.'/inc/adminfunctions_templates.php';
     $lang->load("repbars_18");
     
     find_replace_templatesets("postbit", '#'.preg_quote('{$post[\'groupimage\']}').'#', '{$post[\'groupimage\']} {$post[\'repbars_18\']}');	
@@ -133,56 +163,13 @@ function repbars_18_activate() {
         'gid' => $group['gid']
     );
 
-    $settings[] = array(
-        'name' => 'repbar_18_min',
-        'title' => $db->escape_string($lang->repbars_18_min),
-        'description' => $db->escape_string($lang->repbars_18_min_desc),
-        'optionscode' => 'numeric',
-        'value' => '0',
-        'disporder' => 1,
-        'isdefault' => 0,
-        'gid' => $group['gid']
-    );		
-
-    $settings[] = array(
-        'name' => 'repbar_18_max',
-        'title' => $db->escape_string($lang->repbars_18_max),
-        'description' => $db->escape_string($lang->repbars_18_max_desc),
-        'optionscode' => 'numeric',
-        'value' => '50',
-        'disporder' => 2,
-        'isdefault' => 0,
-        'gid' => $group['gid']
-    );		
-
-    $settings[] = array(
-        'name' => 'repbar_18_background',
-        'title' => $db->escape_string($lang->repbars_18_bgcolor),
-        'description' => $db->escape_string($lang->repbars_18_bgcolor_desc),
-        'optionscode' => 'text',
-        'value' => '#22a232',
-        'disporder' => 3,
-        'isdefault' => 0,
-        'gid' => $group['gid']
-    );		
-
-    $settings[] = array(
-        'name' => 'repbar_18_textcolor',
-        'title' => $db->escape_string($lang->repbars_18_textcolor),
-        'description' => $db->escape_string($lang->repbars_18_textcolor_desc),
-        'optionscode' => 'text',
-        'value' => '#ffffff',
-        'disporder' => 4,
-        'isdefault' => 0,
-        'gid' => $group['gid']
-    );		
-
     foreach($settings as $array => $setting) {
         $db->insert_query("settings", $setting); // lots of queries
     }
+
     rebuild_settings();
 
-    // Enter templates. 
+    // Insert templates
     $templates = array();
     $templates['repbars_18_bar'] = '
     {$br_above_label}
@@ -229,6 +216,7 @@ function repbars_18_deactivate() {
     $groupid = $db->fetch_field($query, 'gid');
     $db->delete_query('settings','gid = "'.$groupid.'"');
     $db->delete_query('settinggroups','gid = "'.$groupid.'"');
+
     rebuild_settings();
 
     // Remove templates
@@ -241,6 +229,7 @@ function repbars_18_deactivate() {
 function repbars_18_parse(&$post) {
     global $mybb, $templates, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
 
+    /*
     $max_width = "";
     $br_above_label = "<br />";    
     $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
@@ -271,11 +260,17 @@ function repbars_18_parse(&$post) {
     }
     $post['reputation'] = (int) $post['reputation'];
     eval("\$post['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
+    */
+
+    // NEW CODE BELOW
+    // Grab all Reputation Bars
+    $advrepbars = $mybb->cache->read('advrepbars');
 }
 
 function repbars_18_profile() {
     global $mybb, $templates, $memprofile, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
     
+    /*
     $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
     $max_width = "max-width: 200px;";
     $br_above_label = "<br />";
@@ -307,14 +302,20 @@ function repbars_18_profile() {
     $post['reputation'] = (int) $memprofile['reputation'];
     $memprofile['reputation'] = (int) $memprofile['reputation'];
     eval("\$memprofile['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
+    */
+
+    // NEW CODE BELOW
+    // Grab all Reputation Bars
+    $advrepbars = $mybb->cache->read('advrepbars');
 }
 
+/* Load Reputation Bar Language File */
 function repbars_18_loadlang() {
     global $lang; 
     $lang->load("repbars_18");
 }
 
-/* Used for populating the menu item in ACP */
+/* AdminCP Functions - Do not edit below here */
 function advrepbars_admin_menu(&$sub_menu) {
 	$sub_menu[] = ['id' => 'advrepbars', 'title' => 'Advanced Reputation Bars', 'link' => 'index.php?module=user-advrepbars'];
 }

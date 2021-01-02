@@ -25,10 +25,12 @@ if (!empty($advrepbars))
         $fontstyle = $advrepbar['fontstyle'];
         $max_width = '300px';
         eval("\$repbar = \"".$templates->get("repbars_18_bar")."\";");
-        $repbar = '<div style="margin-right:10px;width:200px;display:inline-block"><fieldset><legend>'.$advrepbar['name'].'</legend>'.$repbar.'</fieldset></div>';
+        $repbar = '<div style="margin-bottom:15px;width:200px;"><fieldset><legend>'.$advrepbar['name'].'</legend>'.$repbar.'</fieldset></div>';
 
         $advrepbars_templ .= $repbar;
     }
+} else {
+    $advrepbars_templ = "<span>There currently exists no Reputation Bars</span>";
 }
 
 
