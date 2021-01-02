@@ -89,7 +89,7 @@ if (!$mybb->input['action'])
 	/* In case table is empty, let us tell the user there are no bars */
 	if ($table->num_rows() == 0)
 	{
-		$table->construct_cell('There are currently no bars yet, you can <a href="index.php?module-user-adverepbars&action=new">add one now</a>', ['colspan' => 4, 'class' => 'align_center']);
+		$table->construct_cell('There are currently no bars yet, you can <a href="index.php?module=user-advrepbars&action=new">add one now</a>', ['colspan' => 4, 'class' => 'align_center']);
 		$table->construct_row();
 	}
 

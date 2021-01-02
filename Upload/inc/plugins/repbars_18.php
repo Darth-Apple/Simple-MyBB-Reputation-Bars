@@ -82,14 +82,12 @@ function repbars_18_is_installed() {
 }
 
 function repbars_18_uninstall() {
-    global $db, $mybb;
+    global $db;
 
     if ($db->table_exists("advrepbars_bars"))
     {
         $db->write_query("DROP TABLE ".TABLE_PREFIX."advrepbars_bars");
     }
-
-    $mybb->cache->delete('advrepbars');
 }
 
 function repbars_18_activate() {
