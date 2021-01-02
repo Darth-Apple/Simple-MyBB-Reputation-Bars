@@ -229,40 +229,6 @@ function repbars_18_deactivate() {
 function repbars_18_parse(&$post) {
     global $mybb, $templates, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
 
-    /*
-    $max_width = "";
-    $br_above_label = "<br />";    
-    $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
-
-    if ($post['reputation'] == 0) {
-        $background = "#545151"; // Display a gray bar if the user has no reputation. 
-    } 
-    else {
-        $background = htmlspecialchars($mybb->settings['repbar_18_background']);
-    }
-
-    // Determine if we have a full bar
-    if ($post['reputation'] >= $mybb->settings['repbar_18_max']) {
-        $rep = 100; 
-    }
-
-    else {
-        $rep = $post['reputation'] - $mybb->settings['repbar_18_min'];
-        $rep = $rep / ($mybb->settings['repbar_18_max'] - $mybb->settings['repbar_18_min']); 
-        $rep = (int) ($rep * 100); // Avoid situations where the CSS has to render widths such as 3.333333333%, etc. 
-        
-        if ($rep < 5) {
-            $rep = 5;  // Minimum bar width is 5% for asthetic/visual purposes. Otherwise, the reputation count won't fit inside the bar. 
-        }
-        if ($post['reputation'] >= 10 && $rep < 9) {
-            $rep = 9; // Bug fix for situations when two digit reputations don't fit inside the bar background. 
-        }
-    }
-    $post['reputation'] = (int) $post['reputation'];
-    eval("\$post['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
-    */
-
-    // NEW CODE BELOW
     // Grab all Reputation Bars
     $advrepbars = $mybb->cache->read('advrepbars');
 
@@ -326,45 +292,70 @@ function repbars_18_parse(&$post) {
 }
 
 function repbars_18_profile() {
-    global $mybb, $templates, $memprofile, $repbars_18, $templates, $lang, $color, $background, $rep, $max_width, $br_above_label;
-    
-    /*
-    $color = htmlspecialchars($mybb->settings['repbar_18_textcolor']);
-    $max_width = "max-width: 200px;";
-    $br_above_label = "<br />";
-
-    if ($memprofile['reputation'] == 0) {
-        $background = "#545151"; // Display a gray bar if the user has no reputation. 
-    } 
-    else {
-        $background = htmlspecialchars($mybb->settings['repbar_18_background']);
-    }
-
-    // Determine if we have a full bar
-    if ($memprofile['reputation'] >= $mybb->settings['repbar_18_max']) {
-        $rep = 100; 
-    } 
-
-    else {
-        $rep = $memprofile['reputation'] - $mybb->settings['repbar_18_min'];
-        $rep = $rep / ($mybb->settings['repbar_18_max'] - $mybb->settings['repbar_18_min']); 
-        $rep = (int) ($rep * 100); // Avoid situations where the CSS has to render widths such as 3.333333333%, etc. 
-        
-        if ($rep < 5) {
-            $rep = 5;  // Minimum bar width is 5% for asthetic/visual purposes. Otherwise, the reputation count won't fit inside the bar. 
-        }
-        if ($memprofile['reputation'] >= 10 && $rep < 9) {
-            $rep = 9; // Bug fix for situations when two digit reputations don't fit inside the bar background. 
-        }
-    }
-    $post['reputation'] = (int) $memprofile['reputation'];
-    $memprofile['reputation'] = (int) $memprofile['reputation'];
-    eval("\$memprofile['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";"); 
-    */
-
-    // NEW CODE BELOW
+    global $mybb, $templates, $memprofile, $repbars_18, $templates, $lang, $background, $rep, $max_width, $br_above_label;
     // Grab all Reputation Bars
     $advrepbars = $mybb->cache->read('advrepbars');
+
+    $max_width = "max-width:200px";
+    $br_above_label = "<br />"; 
+
+    $max = count($advrepbars)-1; // -1 due to 0 being the index counter
+
+    if ($max <= 0) {
+        // No reputation bars
+        return;
+    } else {
+        // There is at least 1 reputation bar
+        // Find out which level the user is at
+        $counter = 0;
+        foreach ($advrepbars as $repbar) {
+            if ($counter == 0 && $memprofile['reputation'] <= $repbar['level'])
+            {
+                // Lowest Reputation Bar
+                $currentbar = $repbar;
+                $nextbar = $advrepbars[$counter+1];
+            break;
+            } elseif ($counter == $max && $memprofile['reputation'] >= $repbar['level']) {
+                // Highest Reputation Bar
+                $currentbar = $repbar;
+            break;
+            } elseif ($memprofile['reputation'] >= $repbar['level'] && $memprofile['reputation'] < $advrepbars[$counter+1]['level']) {
+                // Somewhere in the middle
+                $currentbar = $repbar;
+                $nextbar = $advrepbars[$counter+1];
+            break;
+            }
+
+            $counter++;
+        }
+
+        $background = $currentbar['bgcolor'];
+        $fontstyle = $currentbar['fontstyle'];
+
+        // Calculate reputation bar fill
+        if (!empty($nextbar))
+        {
+            // This one has a next reputation level
+            if ($counter == 0)
+            {
+                $rep = $memprofile['reputation'];
+                $rep = $rep / ($nextbar['level'] - $currentbar['level']); 
+                $rep = (int)($rep * 100);
+            } else {
+                $rep = $memprofile['reputation'] - $currentbar['level'];
+                $rep = $rep / ($nextbar['level'] - $currentbar['level']); 
+                $rep = (int)($rep * 100);
+            }
+        } else {
+            // The reputation bar is the highest level
+            
+            $rep = 100;
+        }
+
+        $post['reputation'] = (int)$memprofile['reputation'];
+
+        eval("\$memprofile['repbars_18'] = \"".$templates->get("repbars_18_bar")."\";");     
+    }
 }
 
 /* Load Reputation Bar Language File */
