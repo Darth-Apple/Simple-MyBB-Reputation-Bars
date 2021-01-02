@@ -46,4 +46,5 @@ Translations: This plugin is GPL licensed. You may translate as you wish! Many t
 Developers: If you're interested in forking this plugin (or otherwise modifying it or extending it) please feel free. If you distribute a modified version, please leave a link and credit to the original plugin. That's my only request! 
 
 Author: Xazin (GodLess101 on MyBB Community Forums)
+
 Original Author: Darth-Apple (MyBB Community Forums) @ http://makestation.net @ Credited for: https://github.com/Darth-Apple/Simple-MyBB-Reputation-Bars 
