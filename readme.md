@@ -1,4 +1,4 @@
-Reputation Bars: 
+<h2>Reputation Bars</h2>
 
 This is a simple plugin that creates a progress bar for user reputations on their posts (below their avatars). This plugin is safe for live installations and has been tested. As this is a first-version plugin, we encourage you to report any bugs or suggestions you may encounter! :)
 
